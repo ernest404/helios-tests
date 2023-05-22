@@ -1,0 +1,48 @@
+spending vesting
+
+struct Datum {
+    investor: PubKeyHash
+    beneficiary: PubKeyHash
+    deadline: Time
+}
+
+// Redeemer refers to the process of reclaiming or withdrawing digital assets from a smart contract on the blockchain once the specified conditions or requirements have been met.
+// Redeemer holdas the actions for reclaiming funds from smart contract.
+enum Redeemer {
+    Claim
+    Cancel
+}
+
+
+// Any utxo can be lock up at this scripts address.
+// Validation only takes place when we want to consume a utxo at held at the script's address.
+func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
+    // The ScriptContext contains all the metadata related to a signed Cardano transaction.
+    // We get the transaction data structure, which provides us with TXinfo needed for validation.
+    tx: Tx = context.tx;
+    now: Time = tx.time_range.start;
+
+    redeemer.switch {
+        Claim => {
+            (now > datum.deadline).trace("deadline passed: ") && (tx.is_signed_by(datum.beneficiary)).trace("signed by beneficiary: ")
+        }, //There is a comma separating switch cases.
+
+        Cancel => {
+            (now < datum.deadline).trace("deadline has not passed: ") && tx.is_signed_by(datum.investor).trace("signed by investor: ")
+        }
+    }
+}
+
+// const INVESTOR_BYTES = #
+// const BENEFICIARY_BYTES = #
+// const DEADLINE = 0
+
+// const VESTING_DATUM = Datum {
+//     investor: PubKeyHash::new(INVESTOR_BYTES),
+//     beneficiary: PubKeyHash::new(BENEFICIARY_BYTES),
+//     deadline: Time::new(DEADLINE)
+// }
+
+const claim_action = Redeemer::Claim
+const cancel_action = Redeemer::Cancel
+
