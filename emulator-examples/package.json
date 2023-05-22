@@ -1,0 +1,17 @@
+{
+  "name": "emulator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gift.mjs",
+  "scripts": {
+    "dev": "node ./src/mint.mjs",
+    "gift": "node ./src/gift.mjs",
+    "simple": "node ./src/simple.mjs",
+    "vesting": "node ./src/vesting.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hyperionbt/helios": "^0.13.35"
+  }
+}
